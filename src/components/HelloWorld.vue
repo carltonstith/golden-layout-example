@@ -1,57 +1,183 @@
-<template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For guide and recipes on how to configure / customize this project,<br>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank">vue-cli documentation</a>.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel" target="_blank">babel</a></li>
-      <li><a href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint" target="_blank">eslint</a></li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li><a href="https://vuejs.org" target="_blank">Core Docs</a></li>
-      <li><a href="https://forum.vuejs.org" target="_blank">Forum</a></li>
-      <li><a href="https://chat.vuejs.org" target="_blank">Community Chat</a></li>
-      <li><a href="https://twitter.com/vuejs" target="_blank">Twitter</a></li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li><a href="https://router.vuejs.org" target="_blank">vue-router</a></li>
-      <li><a href="https://vuex.vuejs.org" target="_blank">vuex</a></li>
-      <li><a href="https://github.com/vuejs/vue-devtools#vue-devtools" target="_blank">vue-devtools</a></li>
-      <li><a href="https://vue-loader.vuejs.org" target="_blank">vue-loader</a></li>
-      <li><a href="https://github.com/vuejs/awesome-vue" target="_blank">awesome-vue</a></li>
-    </ul>
+<!-- WITHOUT BOOTSTRAP MODAL -->
+<!-- <template>
+  <div id="app">
+    <layout-golden class="screen">
+      <gl-col :closable="false">
+        <gl-row :closable="false">
+          <gl-component title="compA">
+            <h1>CompA</h1>
+            tab: {{selected}}
+            <button @click="bottomSheet = !bottomSheet">Toggle</button>
+            <button @click="addStack">Add</button>
+          </gl-component>
+          <gl-stack ref="myStack">
+            <gl-component v-for="stackSub in stackSubs" :key="stackSub" :title="'dynamic'+stackSub">
+              Added item (id: {{stackSub}})
+              <button @click="remStack(stackSub)">Remove</button>
+            </gl-component>
+          </gl-stack>
+        </gl-row>
+        <gl-stack v-model="selected">
+          <gl-component title="compB" tab-id="b">
+            <h1>CompB</h1>
+            <button @click="selected = 'c'">Toggle</button>
+          </gl-component>
+          <gl-component title="compC" tab-id="c">
+            <h1>CompC</h1>
+            <button @click="selected = 'b'">Toggle</button>
+          </gl-component>
+        </gl-stack>
+        <gl-component v-if="bottomSheet">
+          <h1>Bottom</h1>
+        </gl-component>
+      </gl-col>
+    </layout-golden>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'HelloWorld',
-  props: {
-    msg: String
-  }
-}
+  name: 'app',
+  data: function() {
+    return {
+      bottomSheet: false,
+      selected: 'b',
+      stackSubs: [1],
+      ssId: 1,
+    };
+  },
+  methods: {
+    addStack() {
+      //this.$refs.myStack.addGlChild(...)
+      this.stackSubs.push(++this.ssId);
+    },
+    remStack(id) {
+      var ndx = this.stackSubs.indexOf(id);
+      if (~ndx) this.stackSubs.splice(ndx, 1);
+    },
+  },
+};
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-h3 {
-  margin: 40px 0 0;
+<style>
+body {
+  overflow: hidden; /* The 'light' theme let a scroll-bar on the right of the main container */
 }
-ul {
-  list-style-type: none;
-  padding: 0;
+
+.screen {
+  width: 100vw;
+  height: 100vh;
 }
-li {
-  display: inline-block;
-  margin: 0 10px;
+</style> -->
+
+
+<!-- WITH BOOTSTRAP MODAL -->
+<template>
+  <div id="app">
+    <layout-golden class="screen">
+      <gl-col :closable="false">
+        <gl-row :closable="false">
+          <gl-component title="compA">
+            <h1>CompA</h1>
+            <test />
+            tab: {{selected}}
+            <button @click="bottomSheet = !bottomSheet">Toggle</button>
+            <b-btn variant="success" @click="showModal">Add Nav Item</b-btn>
+          </gl-component>
+          <gl-stack ref="myStack">
+            <gl-component v-for="stackSub in stackSubs" :key="stackSub" :title="'dynamic'+stackSub">
+              Added Dossier item (id: {{stackSub}})
+              <p v-for="feature in features">You've selected the {{ feature.navFeature }} item.</p>
+              <button @click="remStack(stackSub)">Remove</button>
+            </gl-component>
+          </gl-stack>
+        </gl-row>
+        <gl-stack v-model="selected">
+          <gl-component title="compB" tab-id="b">
+            <h1>CompB</h1>
+            <button @click="selected = 'c'">Toggle</button>
+          </gl-component>
+          <gl-component title="compC" tab-id="c">
+            <h1>CompC</h1>
+            <button @click="selected = 'b'">Toggle</button>
+          </gl-component>
+        </gl-stack>
+        <gl-component v-if="bottomSheet">
+          <h1>Bottom</h1>
+        </gl-component>
+      </gl-col>
+      <b-modal ref="myModalRef" hide-footer title="Using Component Methods">
+        <div class="d-block text-center">
+          <label for="">Nav Menu Item: </label>
+          <select v-model="selected">
+            <option disabled value="">Please select one</option>
+            <option v-for="feature in features">{{ feature.navFeature }}</option>
+          </select>
+          <br>
+          <span>Selected Nav Item: {{ selected }}</span>
+
+        </div>
+        <b-btn class="mt-3" variant="outline-danger" block @click="addStack">Add Nav Item</b-btn>
+      </b-modal>
+    </layout-golden>
+  </div>
+</template>
+
+<script>
+import Test from './Test.vue'
+
+export default {
+  name: 'app',
+  components: {
+    Test
+  },
+  data: function() {
+    return {
+      bottomSheet: false,
+      // selected: 'b',
+      stackSubs: [1],
+      ssId: 1,
+      newDossierNavItem: '',
+      selected: '',
+      features: [
+        { navFeature: 'Assets' },
+        { navFeature: 'Work Orders' },
+        { navFeature: 'Work Requests' },
+        { navFeature: 'Work Estimates' },
+        { navFeature: 'Parts' },
+        { navFeature: 'Personnel' },
+        { navFeature: 'Vendors' },
+        { navFeature: 'Standard Repairs' },
+        { navFeature: 'Tasks' }
+      ]
+    };
+  },
+  methods: {
+    addStack() {
+      //this.$refs.myStack.addGlChild(...)
+      this.stackSubs.push(++this.ssId);
+      this.$refs.myModalRef.hide();
+    },
+    remStack(id) {
+      var ndx = this.stackSubs.indexOf(id);
+      if (~ndx) this.stackSubs.splice(ndx, 1);
+    },
+    showModal() {
+      this.$refs.myModalRef.show()
+    },
+    hideModal() {
+      this.$refs.myModalRef.hide()
+    }
+  },
+};
+</script>
+
+<style>
+body {
+  overflow: hidden; /* The 'light' theme let a scroll-bar on the right of the main container */
 }
-a {
-  color: #42b983;
+.screen {
+  width: 100vw;
+  height: 100vh;
 }
 </style>
