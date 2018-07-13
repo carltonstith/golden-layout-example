@@ -40,4 +40,7 @@ export default {
 .card {
   margin: 0 auto;
 }
+.blue {
+  color: blue;
+}
 </style>

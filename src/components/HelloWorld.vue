@@ -85,9 +85,9 @@ body {
             <b-btn variant="success" @click="showModal">Add Nav Item</b-btn>
           </gl-component>
           <gl-stack ref="myStack">
-            <gl-component v-for="stackSub in stackSubs" :key="stackSub" :title="'dynamic'+stackSub">
+            <gl-component v-for="stackSub in stackSubs" :key="stackSub" :title="selected">
               Added Dossier item (id: {{stackSub}})
-              <p v-for="feature in features">You've selected the {{ feature.navFeature }} item.</p>
+              <p v-for="feature in features">You selected the {{selected}}</p>
               <button @click="remStack(stackSub)">Remove</button>
             </gl-component>
           </gl-stack>
@@ -115,7 +115,7 @@ body {
           </select>
           <br>
           <span>Selected Nav Item: {{ selected }}</span>
-
+          <span v-if="selectedNavItem.asset.description"></span>
         </div>
         <b-btn class="mt-3" variant="outline-danger" block @click="addStack">Add Nav Item</b-btn>
       </b-modal>
@@ -125,6 +125,7 @@ body {
 
 <script>
 import Test from './Test.vue'
+import availableNavItems from '../data/nav'
 
 export default {
   name: 'app',
@@ -133,6 +134,18 @@ export default {
   },
   data: function() {
     return {
+      availableNavItems,
+      selectedNavItem: {
+          asset: {},
+          workOrder: {},
+          workRequest: {},
+          workEstimate: {},
+          part: {},
+          person: {},
+          vendor: {},
+          standardRepair: {},
+          task: {}
+      },
       bottomSheet: false,
       // selected: 'b',
       stackSubs: [1],
@@ -173,8 +186,12 @@ export default {
 </script>
 
 <style>
-body {
-  overflow: hidden; /* The 'light' theme let a scroll-bar on the right of the main container */
+/* The 'light' theme let a scroll-bar on the right of the main container */
+/* body {
+  overflow: hidden;
+} */
+body .lm_content{
+  overflow: scroll;
 }
 .screen {
   width: 100vw;
